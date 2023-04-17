@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 const View = styled.View`
   flex: 1;
   background-color: tomato;
-  padding: 100px 50px 0px;
+  padding: 100px 30px 0px;
 `;
 
 const Title = styled.Text`

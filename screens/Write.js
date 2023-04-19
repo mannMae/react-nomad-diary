@@ -74,6 +74,17 @@ export const Write = () => {
     if (feelings === "" || selectedEmotion === null) {
       return Alert.alert("Please complete form");
     }
+
+    realm.write(() => {
+      const feeling = realm.create("Feeling", {
+        _id: Date.now(),
+        emotion: selectedEmotion,
+        message: feelings,
+      });
+      console.log(feeling);
+    });
+    setSelectedEmotion(null);
+    setFeelings("");
   };
   return (
     <View>

@@ -59,7 +59,7 @@ const EmotionText = styled.Text`
   font-size: 24px;
 `;
 
-export const Write = () => {
+export const Write = ({ navigation: { goBack } }) => {
   const realm = useContext(DBContext);
   const [selectedEmotion, setSelectedEmotion] = useState(null);
   const emotions = ["😅", "🥹", "🥰", "😎", "😵‍💫", "😏"];
@@ -83,8 +83,7 @@ export const Write = () => {
       });
       console.log(feeling);
     });
-    setSelectedEmotion(null);
-    setFeelings("");
+    goBack();
   };
   return (
     <View>
@@ -107,7 +106,7 @@ export const Write = () => {
         onChangeText={onChangeText}
         placeholder="Write Your Feelings"
       />
-      <Button>
+      <Button onPress={onSubmit}>
         <ButtonText>Save</ButtonText>
       </Button>
     </View>

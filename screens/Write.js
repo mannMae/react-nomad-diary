@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Alert } from "react-native";
 import styled from "styled-components/native";
+import { DBContext } from "../context";
 
 const View = styled.View`
   background-color: tomato;
@@ -59,6 +60,7 @@ const EmotionText = styled.Text`
 `;
 
 export const Write = () => {
+  const realm = useContext(DBContext);
   const [selectedEmotion, setSelectedEmotion] = useState(null);
   const emotions = ["😅", "🥹", "🥰", "😎", "😵‍💫", "😏"];
   const onEmtionPress = (icon) => setSelectedEmotion(icon);

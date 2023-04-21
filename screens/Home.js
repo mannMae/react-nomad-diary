@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDB } from "../context";
-import { FlatList } from "react-native";
+import {
+  FlatList,
+  LayoutAnimation,
+  Platform,
+  TouchableOpacity,
+  UIManager,
+} from "react-native";
 
 const View = styled.View`
   flex: 1;
@@ -59,11 +65,24 @@ export const Home = ({ navigation: { navigate } }) => {
   const [feelings, setFeelings] = useState(realm.objects("Feeling"));
   useEffect(() => {
     const feelings = realm.objects("Feeling");
-    feelings.addListener(() => {
-      const feelings = realm.objects("Feeling");
-      setFeelings(feelings);
+    feelings.addListener((feelings, changes) => {
+      setFeelings(feelings.sorted("_id", false));
+      if (
+        Platform.OS === "android" &&
+        UIManager.setLayoutAnimationEnabledExperimental
+      ) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+      }
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     });
   }, []);
+
+  const onPressRecord = (id) => {
+    realm.write(() => {
+      const feeling = realm.objectForPrimaryKey("Feeling", id);
+      realm.delete(feeling);
+    });
+  };
   return (
     <View>
       <Title>My Journal</Title>
@@ -73,10 +92,12 @@ export const Home = ({ navigation: { navigate } }) => {
         ItemSeparatorComponent={<Separator />}
         contentContainerStyle={{ paddingVertical: 10 }}
         renderItem={({ item }) => (
-          <Record>
-            <Emotion>{item.emotion}</Emotion>
-            <Message>{item.message}</Message>
-          </Record>
+          <TouchableOpacity onPress={() => onPressRecord(item._id)}>
+            <Record>
+              <Emotion>{item.emotion}</Emotion>
+              <Message>{item.message}</Message>
+            </Record>
+          </TouchableOpacity>
         )}
       />
       <Button onPress={() => navigate("Write")}>
